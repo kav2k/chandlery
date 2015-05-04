@@ -112,8 +112,8 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
 
 chrome.runtime.onInstalled.addListener(function() {
   var defaults = {
-    actionsFull: true,
-    cardsFull: false
+    notifyActionsFull: true,
+    notifyCardsFull: false
   };
 
   chrome.storage.local.get(defaults, function(options) {
