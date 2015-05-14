@@ -30,7 +30,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 chrome.runtime.onInstalled.addListener(function() {
   var defaults = {
     notifyActionsFull: true,
-    notifyCardsFull: false
+    notifyCardsFull: false,
+    lastNotifications: {}
   };
 
   chrome.storage.local.get(defaults, function(options) {

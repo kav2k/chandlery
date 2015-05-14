@@ -2,8 +2,10 @@ function showNotification(notifications) {
   if(notifications.length) {
 
     var message = "";
+    var notificationBits = {};
 
     notifications.forEach(function(notification) {
+      notificationBits[notification.type] = true;
       switch(notification.type) {
         case "actionsFull":
           message += "Your actions candle is full! ("
@@ -20,35 +22,65 @@ function showNotification(notifications) {
       }
     });
 
-    createOrUpdate("chandleryNotify", {
-      type: "basic",
-      iconUrl: "img/icon128.png",
-      title: "Fallen London Chandlery",
-      message: message.trim(),
-      buttons: [
-        {title: "Options"}
-      ]
-    })
+    chrome.storage.local.get({lastNotifications: {}}, function(data) {
+      var reshow = false;
+
+      for(var key in notificationBits) {
+        if(!data.lastNotifications[key]) reshow = true; // Something new
+      }
+
+      createOrUpdate({
+        id: "chandleryNotify",
+        reshow: reshow,
+        type: "basic",
+        iconUrl: "img/icon128.png",
+        title: "Fallen London Chandlery",
+        message: message.trim(),
+        buttons: [
+          {title: "Options"}
+        ]
+      });
+
+      chrome.storage.local.set({lastNotifications: notificationBits});
+    });
 
   } else {
     chrome.notifications.clear("chandleryNotify");
+    chrome.storage.local.set({lastNotifications: {}});
   }
 }
 
 // UTILITY FUNCTIONS
 
-function createOrUpdate(id, options, callback) {
+function createOrUpdate(options, callback) {
   callback = callback || function() {};
-  chrome.notifications.update(id, { priority: 0 }, function(existed) {
+
+  var id = options.id;
+  delete options.id;
+
+  var reshow = options.reshow;
+  delete options.reshow;
+
+  var targetPriority = options.priority || 0;
+
+  if(reshow) targetPriority = 0; // Guarantees 1 > targetPriority
+
+  chrome.notifications.update(id, { priority: targetPriority }, function(existed) {
     if(existed) {
-      var targetPriority = options.priority || 0;
-      options.priority = 1;
-      // Update with higher priority
-      chrome.notifications.update(id, options, function() {
-        chrome.notifications.update(id, { priority: targetPriority }, function() {
+      if(reshow) {
+        targetPriority = options.priority || 0;
+        options.priority = 1;
+        // Update with higher priority
+        chrome.notifications.update(id, options, function() {
+          chrome.notifications.update(id, { priority: targetPriority }, function() {
+            callback(true); // Updated
+          });
+        });
+      } else {
+        chrome.notifications.update(id, options, function() {
           callback(true); // Updated
         });
-      });
+      }
     } else {
       chrome.notifications.create(id, options, function() {
         callback(false); // Created
