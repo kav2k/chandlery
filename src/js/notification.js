@@ -70,12 +70,12 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
             function(response) {
               if(chrome.runtime.lastError) {
                 console.log("No response from last known tab");
-                chrome.tabs.create({url: "http://http://fallenlondon.storynexus.com/"});
+                chrome.tabs.create({url: "http://fallenlondon.storynexus.com/"});
               }
             }
           );
         } else {
-          chrome.tabs.create({url: "http://http://fallenlondon.storynexus.com/"});
+          chrome.tabs.create({url: "http://fallenlondon.storynexus.com/"});
         }
       });
       chrome.notifications.clear("chandleryNotify");
