@@ -96,16 +96,8 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
     case "chandleryNotify":
       chrome.tabs.query({url: "http://fallenlondon.storynexus.com/Gap/Load*"}, function(tabs) {
         if(tabs.length) {
-          chrome.tabs.sendMessage(
-            tabs[0].id,
-            {command: "pingFocus"},
-            function(response) {
-              if(chrome.runtime.lastError) {
-                console.log("No response from last known tab");
-                chrome.tabs.create({url: "http://fallenlondon.storynexus.com/"});
-              }
-            }
-          );
+          chrome.tabs.update(tabs[0].id, {active: true});
+          chrome.windows.update(tabs[0].windowId, {focused: true});
         } else {
           chrome.tabs.create({url: "http://fallenlondon.storynexus.com/"});
         }

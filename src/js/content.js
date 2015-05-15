@@ -119,16 +119,6 @@ function notifyBackground(state) {
   }
 }
 
-// MESSAGE LISTENER
-
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-  switch(message.command) {
-    case "pingFocus":
-      chrome.runtime.sendMessage({command: "focus"});
-      break;
-  }
-});
-
 var version = chrome.runtime.getManifest().version;
 
 console.log("Chandlery " + version + " injected");

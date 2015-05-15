@@ -16,10 +16,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         showNotification(notifications);
       });
       break;
-    case "focus":
-      chrome.tabs.update(sender.tab.id, {active: true});
-      chrome.windows.update(sender.tab.windowId, {focused: true});
-      break;
   }
 });
 
