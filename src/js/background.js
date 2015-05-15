@@ -31,7 +31,7 @@ chrome.runtime.onInstalled.addListener(function() {
   var defaults = {
     notifyActionsFull: true,
     notifyCardsFull: false,
-    lastNotifications: {}
+    syncOverride: false
   };
 
   chrome.storage.local.get(defaults, function(options) {
