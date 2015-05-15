@@ -1,3 +1,10 @@
+Version 1.2
+
+* Reworked options page, added changelog viewer
+* Implemented Chrome Sync for options
+* Made notifications reappear only if there's a new alert
+* Fixed opening a new tab from notification, if FL was closed
+
 Version 1.1
 
 * Fixed default options setup
