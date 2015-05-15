@@ -94,10 +94,10 @@ function createOrUpdate(options, callback) {
 chrome.notifications.onClicked.addListener(function(notificationId) {
   switch(notificationId) {
     case "chandleryNotify":
-      chrome.storage.local.get("lastTabId", function(options) {
-        if(options.lastTabId) {
+      chrome.tabs.query({url: "http://fallenlondon.storynexus.com/Gap/Load*"}, function(tabs) {
+        if(tabs.length) {
           chrome.tabs.sendMessage(
-            options.lastTabId,
+            tabs[0].id,
             {command: "pingFocus"},
             function(response) {
               if(chrome.runtime.lastError) {

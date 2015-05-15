@@ -15,7 +15,7 @@ var queuedChanges = {};
 var syncStamp = 1;
 
 chrome.storage.onChanged.addListener(function(changes, area) {
-  chrome.local.get(["syncOverride"], function(data) {
+  chrome.storage.local.get(["syncOverride"], function(data) {
     // If sync should be ignored, ignore it
     if(data.syncOverride) return;
 
