@@ -4,6 +4,19 @@ p {
   white-space: nowrap;
 }
 
+label[title] {
+  cursor: help;
+}
+
+.header { 
+  font-size: larger;
+  font-weight: bold;
+}
+
+.item { 
+  margin: 0 0 0 10px;
+}
+
 #changelogHideLink {
   display: none;
 }
