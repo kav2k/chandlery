@@ -1,9 +1,14 @@
+Version 1.2.1
+
+* Make the extension (re)activate on install/update without Fallen London reload
+  (!) This requires a new permission
+
 Version 1.2
 
 * Reworked options page, added changelog viewer
-* Implemented Chrome Sync for options
+* Implemented Chrome Sync for options (with optional override)
 * Made notifications reappear only if there's a new alert
-* Fixed opening a new tab from notification, if FL was closed
+* Fixed opening a new tab from notification if FL was closed
 
 Version 1.1
 

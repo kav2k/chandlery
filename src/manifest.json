@@ -5,7 +5,7 @@
   "short_name": "Chandlery",
   "description": "Unofficial Fallen London extension to keep an eye on your action candle and Opportunities deck",
 
-  "version": "1.2",
+  "version": "1.2.1",
 
   "icons": {
     "16" : "img/icon48.png",
