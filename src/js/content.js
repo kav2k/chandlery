@@ -108,7 +108,15 @@ function notifyBackground(state) {
     actions: state.actions,
     cards:   state.cards
   };
-  chrome.runtime.sendMessage(message);
+
+  try {
+    chrome.runtime.sendMessage(message);
+  } catch(e) {
+    // Content script orphaned; stop processing
+    console.warn("Chandlery " + version + " content script orphaned");
+    actionsObserver.disconnect();
+    cardsObserver.disconnect();
+  }
 }
 
 // MESSAGE LISTENER
@@ -120,3 +128,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       break;
   }
 });
+
+var version = chrome.runtime.getManifest().version;
+
+console.log("Chandlery " + version + " injected");
