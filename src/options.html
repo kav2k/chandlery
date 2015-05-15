@@ -2,27 +2,38 @@
 <html>
 <head>
   <title>Chandlery Options</title>
-  <style>
-    body: { padding: 10px; }
-  </style>
+  <link rel="stylesheet" href="css/options.css">
+  <script src="js/lib/jquery.js"></script>
+  <script src="js/options.js"></script>
 </head>
 
 <body>
-  <p><label>
-    <input type="checkbox" id="notifyActionsFull">
-    Desktop notification for a full actions candle
-  </label></p>
-
-  <p><label>
-    <input type="checkbox" id="notifyCardsFull">
-    Desktop notification for a full Opportunities deck
-  </label></p>
-
   <p>
-    Please note: notifications work only if Fallen London is open in a tab.
+    <a href="#" id="changelogLink">Show changelog</a>
+    <a href="#" id="changelogHideLink">Hide changelog</a> |
+    <a href="https://github.com/kav2k/chandlery">Source code &amp; bug tracker</a> |
+    <a href="https://chrome.google.com/webstore/detail/chandlery-for-fallen-lond/anhebaghddcipcnlgoehajobofkgghje/reviews">Rate in Chrome Web Store</a>
   </p>
 
-  <script src="js/lib/jquery.js"></script>
-  <script src="js/options.js"></script>
+  <div id="optionsContainer">
+    <p><label>
+      <input type="checkbox" id="notifyActionsFull">
+      Desktop notification for a full actions candle
+    </label></p>
+
+    <p><label>
+      <input type="checkbox" id="notifyCardsFull">
+      Desktop notification for a full Opportunities deck
+    </label></p>
+
+    <p>
+      Please note: notifications work only if Fallen London is open in a tab.
+    </p>
+  </div>
+
+  <div id="changelogContainer">
+    <pre id="changelogText"></pre>
+  </div>
+
 </body>
 </html>

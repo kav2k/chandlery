@@ -1,0 +1,22 @@
+p { 
+  font-family: sans-serif;
+  font-size: small;
+  white-space: nowrap;
+}
+
+#changelogHideLink {
+  display: none;
+}
+
+#changelogContainer { 
+  display: none; 
+  width: 600px;
+}
+
+#changelogText { 
+  white-space: pre-wrap; 
+  border: solid 1px black; 
+  padding: 10px; 
+  height: 400px;
+  overflow-y: auto; 
+}
