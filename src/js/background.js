@@ -7,13 +7,23 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       var actions = message.actions;
       var cards = message.cards;
       chrome.storage.local.get(null, function(options) {
-        if (options.notifyActionsFull && actions.known && actions.full) {
+        if (options.notifyActionsFull && actions.known && actions.full && !options.lastKnown.actions.full) {
           notifications.push({type: "actionsFull", count: actions.current});
         }
-        if (options.notifyCardsFull && cards.known && cards.full) {
+        if (options.notifyCardsFull && cards.known && cards.full && !options.lastKnown.cards.full) {
           notifications.push({type: "cardsFull", count: cards.current});
         }
         showNotification(notifications);
+
+        var lastKnown = options.lastKnown;
+        if (actions.known) {
+          lastKnown.actions = actions;
+        }
+        if (cards.known) {
+          lastKnown.cards = cards;
+        }
+
+        chrome.storage.local.set({lastKnown: lastKnown});
       });
       break;
   }
@@ -41,7 +51,11 @@ chrome.runtime.onInstalled.addListener(function() {
   var defaults = {
     notifyActionsFull: true,
     notifyCardsFull: false,
-    syncOverride: false
+    syncOverride: false,
+    lastKnown: {
+      actions: {},
+      cards: {}
+    }
   };
 
   chrome.storage.local.get(defaults, function(options) {
