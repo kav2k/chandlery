@@ -2,18 +2,18 @@
 
 function getActions() {
   var actionsElement = document.getElementById("infoBarCurrentActions");
-  if(!actionsElement) {
+  if (!actionsElement) {
     return {known: false};
   }
   var actionsText = actionsElement.parentElement.textContent; // Contains e.g. "4/20"
   var match = actionsText.match(/(\d+)\/(\d+)/);
-  if(match) {
+  if (match) {
     return {
       known: true,
       current: parseInt(match[1]),
       total: parseInt(match[2]),
       full: parseInt(match[1]) == parseInt(match[2])
-    }
+    };
   } else {
     return {known: false};
   }
@@ -35,17 +35,17 @@ var actionsObserver = watchForChange(
 
 function getCards() {
   var cardsElement = document.getElementById("card_deck");
-  if(!cardsElement) {
+  if (!cardsElement) {
     return {known: false};
   }
   var cardsText = cardsElement.parentElement.textContent; // Contains e.g. "4/20"
   var match = cardsText.match(/(\d+|No) cards? waiting/);
-  if(match) {
+  if (match) {
     return {
       known: true,
       current: (match[1] == "No") ? 0 : parseInt(match[1]),
       full: !cardsText.match(/Another in/)
-    }
+    };
   } else {
     return {known: false};
   }
@@ -68,16 +68,16 @@ var cardsObserver = watchForChange(
 function watchForChange(rootId, marker, callback) {
   var observer = new MutationSummary({
     rootNode: document.getElementById(rootId),
-    callback: function(summaries){
+    callback: function(summaries) {
       var filtered = [];
       summaries.forEach(function(summary) {
         filtered = filtered.concat(
           summary.added.filter(markerFilter(marker))
         );
       });
-      if(filtered.length) callback(filtered);
+      if (filtered.length) { callback(filtered); }
     },
-    queries: [{ characterData: true }]
+    queries: [{characterData: true}]
   });
 
   return observer;
@@ -87,7 +87,7 @@ function markerFilter(marker) {
   return function(element) {
     return element.parentNode.id == marker ||
            element.parentNode.classList.contains(marker);
-  }
+  };
 }
 
 // ACTIONS
@@ -96,14 +96,18 @@ var baseTitle = document.title;
 
 function setTitle(state) {
   var title = "";
-  if(state.actions.known) title += "(" + state.actions.current + ") ";
-  if(state.cards.known)   title += "[" + state.cards.current   + "] ";
-                          title += baseTitle;
+  if (state.actions.known) {
+    title += "(" + state.actions.current + ") ";
+  }
+  if (state.cards.known) {
+    title += "[" + state.cards.current   + "] ";
+  }
+  title += baseTitle;
   document.title = title;
 }
 
 function notifyBackground(state) {
-  message = { 
+  message = {
     command: "notify",
     actions: state.actions,
     cards:   state.cards
@@ -111,7 +115,7 @@ function notifyBackground(state) {
 
   try {
     chrome.runtime.sendMessage(message);
-  } catch(e) {
+  } catch (e) {
     // Content script orphaned; stop processing
     console.warn("Chandlery " + version + " content script orphaned");
     actionsObserver.disconnect();

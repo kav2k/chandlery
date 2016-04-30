@@ -1,23 +1,20 @@
 function showNotification(notifications) {
-  if(notifications.length) {
+  if (notifications.length) {
 
     var message = "";
+    var count = "";
     var notificationBits = {};
 
     notifications.forEach(function(notification) {
       notificationBits[notification.type] = true;
-      switch(notification.type) {
+      switch (notification.type) {
         case "actionsFull":
-          message += "Your actions candle is full! ("
-            + notification.count
-            + ((notification.count - 1) ? " actions" : " action")
-            + ")\n";
+          count = notification.count + ((notification.count - 1) ? " actions" : " action");
+          message += "Your actions candle is full! (" + count + ")\n";
           break;
         case "cardsFull":
-          message += "Your Opportunity deck is full! ("
-            + notification.count
-            + ((notification.count - 1) ? " cards" : " cards")
-            + ")\n";
+          count = notification.count + ((notification.count - 1) ? " card" : " cards");
+          message += "Your Opportunity deck is full! (" + count + ")\n";
           break;
       }
     });
@@ -25,8 +22,10 @@ function showNotification(notifications) {
     chrome.storage.local.get({lastNotifications: {}}, function(data) {
       var reshow = false;
 
-      for(var key in notificationBits) {
-        if(!data.lastNotifications[key]) reshow = true; // Something new
+      for (var key in notificationBits) {
+        if (!data.lastNotifications[key]) {
+          reshow = true; // Something new
+        }
       }
 
       createOrUpdate({
@@ -63,16 +62,18 @@ function createOrUpdate(options, callback) {
 
   var targetPriority = options.priority || 0;
 
-  if(reshow) targetPriority = 0; // Guarantees 1 > targetPriority
+  if (reshow) {
+    targetPriority = 0; // Guarantees 1 > targetPriority
+  }
 
-  chrome.notifications.update(id, { priority: targetPriority }, function(existed) {
-    if(existed) {
-      if(reshow) {
+  chrome.notifications.update(id, {priority: targetPriority}, function(existed) {
+    if (existed) {
+      if (reshow) {
         targetPriority = options.priority || 0;
         options.priority = 1;
         // Update with higher priority
         chrome.notifications.update(id, options, function() {
-          chrome.notifications.update(id, { priority: targetPriority }, function() {
+          chrome.notifications.update(id, {priority: targetPriority}, function() {
             callback(true); // Updated
           });
         });
@@ -92,10 +93,10 @@ function createOrUpdate(options, callback) {
 // EVENT LISTENERS
 
 chrome.notifications.onClicked.addListener(function(notificationId) {
-  switch(notificationId) {
+  switch (notificationId) {
     case "chandleryNotify":
       chrome.tabs.query({url: "http://fallenlondon.storynexus.com/Gap/Load*"}, function(tabs) {
-        if(tabs.length) {
+        if (tabs.length) {
           chrome.tabs.update(tabs[0].id, {active: true});
           chrome.windows.update(tabs[0].windowId, {focused: true});
         } else {

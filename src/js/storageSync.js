@@ -17,35 +17,35 @@ var syncStamp = 1;
 chrome.storage.onChanged.addListener(function(changes, area) {
   chrome.storage.local.get(["syncOverride"], function(data) {
     // If sync should be ignored, ignore it
-    if(data.syncOverride) return;
+    if (data.syncOverride) { return; }
 
     // Check if it's an echo of our changes
-    if(changes._syncStamp && changes._syncStamp.newValue == syncStamp) {
+    if (changes._syncStamp && changes._syncStamp.newValue == syncStamp) {
       return;
     }
 
-    if(area == "local") {
+    if (area == "local") {
       // Change in local storage: queue a flush to sync
 
       // Filter out syncable properties
       var filteredChanges = {};
       var syncable = false;
 
-      for(var key of syncableOptions) {
-        if(typeof changes[key] != "undefined") {
+      for (let key of syncableOptions) {
+        if (typeof changes[key] != "undefined") {
           filteredChanges[key] = changes[key];
           syncable = true;
         }
       }
 
       // Nothing to sync
-      if(!syncable) return;
+      if (!syncable) { return; }
 
       // Reset timeout
-      if(timeout) { clearTimeout(timeout); }
+      if (timeout) { clearTimeout(timeout); }
 
       // Merge changes with already queued ones
-      for(var key in filteredChanges) {
+      for (let key in filteredChanges) {
         // Just overwrite old change; we don't care about last newValue
         queuedChanges[key] = filteredChanges[key];
       }
@@ -56,7 +56,7 @@ chrome.storage.onChanged.addListener(function(changes, area) {
     } else {
       // Change in sync storage: copy to local
 
-      if(changes._syncStamp && changes._syncStamp.newValue) {
+      if (changes._syncStamp && changes._syncStamp.newValue) {
         // Ignore those changes when they echo as local
         syncStamp = changes._syncStamp.newValue;
       }
@@ -87,12 +87,12 @@ function flushToSync() {
 function commitChanges(changes, storage) {
   var setData = {};
 
-  for(var key in changes) {
+  for (var key in changes) {
     setData[key] = changes[key].newValue;
   }
 
   storage.set(setData, function() {
-    if(chrome.runtime.lastError) {
+    if (chrome.runtime.lastError) {
       console.error(chrome.runtime.lastError.message);
     }
   });
