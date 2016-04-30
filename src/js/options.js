@@ -7,7 +7,7 @@ $(document).ready(function() {
     });
   }).change(function() {
     var data = {};
-        data[this.id] = this.checked;
+    data[this.id] = this.checked;
     console.log("Save: ", data);
     chrome.storage.local.set(data);
   });

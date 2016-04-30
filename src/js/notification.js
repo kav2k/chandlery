@@ -22,7 +22,7 @@ function showNotification(notifications) {
     chrome.storage.local.get({lastNotifications: {}}, function(data) {
       var reshow = false;
 
-      for (var key in notificationBits) {
+      for (let key in notificationBits) {
         if (!data.lastNotifications[key]) {
           reshow = true; // Something new
         }

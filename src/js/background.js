@@ -30,7 +30,7 @@ function reinjectContentScripts() {
 
   chrome.tabs.query({}, function(tabs) {
     tabs.forEach(function(tab) {
-      for (var file of contentScripts) {
+      for (let file of contentScripts) {
         chrome.tabs.executeScript(tab.id, {file: file}, silenceErrors);
       }
     });
