@@ -24,10 +24,14 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 function reinjectContentScripts() {
   var contentScripts = ["js/lib/mutation-summary.js", "js/content.js"];
 
-  chrome.tabs.query({url: "http://fallenlondon.storynexus.com/Gap/Load*"}, function(tabs) {
+  function silenceErrors() {
+    if (chrome.runtime.lastError) { return; } // Silence access errors for reinjection
+  }
+
+  chrome.tabs.query({}, function(tabs) {
     tabs.forEach(function(tab) {
       for (var file of contentScripts) {
-        chrome.tabs.executeScript(tab.id, {file: file});
+        chrome.tabs.executeScript(tab.id, {file: file}, silenceErrors);
       }
     });
   });
