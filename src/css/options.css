@@ -17,19 +17,24 @@ label[title] {
   margin: 0 0 0 10px;
 }
 
-#changelogHideLink {
+.changelogHideLink {
   display: none;
 }
 
-#changelogContainer { 
-  display: none; 
+.container {
+  display: none;
   width: 600px;
 }
 
-#changelogText { 
-  white-space: pre-wrap; 
-  border: solid 1px black; 
-  padding: 10px; 
-  height: 400px;
-  overflow-y: auto; 
+.container .changelog {
+  white-space: pre-wrap;
+  border: solid 1px black;
+  padding: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.extlink:after {
+  content: url(/img/Icon_External_Link.svg);
+  margin-left: 0.2em;
 }
