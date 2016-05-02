@@ -7,18 +7,30 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       var actions = message.actions;
       var cards = message.cards;
       chrome.storage.local.get(null, function(options) {
-        if (options.notifyActionsFull && actions.known && actions.full) {
+        if ((options.notifyActionsMode === "notifyActionsFull" || options.notifyActionsMode === "notifyActionsThreshold") && actions.known && actions.full) {
           notifications.push({
             type: "actionsFull",
             count: actions.current,
             stale: options.lastKnown.actions.full
           });
+        } else if (options.notifyActionsMode === "notifyActionsThreshold" && actions.known && actions.current >= options.notifyActionsThresholdValue) {
+          notifications.push({
+            type: "actionsThreshold",
+            count: actions.current,
+            stale: options.lastKnown.actions.current >= options.notifyActionsThresholdValue
+          });
         }
-        if (options.notifyCardsFull && cards.known && cards.full) {
+        if ((options.notifyCardsMode === "notifyCardsFull" || options.notifyActionsMode === "notifyCardsThreshold") && cards.known && cards.full) {
           notifications.push({
             type: "cardsFull",
             count: cards.current,
             stale: options.lastKnown.cards.full
+          });
+        } else if (options.notifyCardsMode === "notifyCardsThreshold" && cards.known && cards.current >= options.notifyCardsThresholdValue) {
+          notifications.push({
+            type: "cardsThreshold",
+            count: cards.current,
+            stale: options.lastKnown.cards.current >= options.notifyCardsThresholdValue
           });
         }
         showNotification(notifications);
@@ -57,19 +69,41 @@ function reinjectContentScripts() {
 
 chrome.runtime.onInstalled.addListener(function() {
   var defaults = {
-    notifyActionsFull: true,
-    notifyCardsFull: false,
+    notifyActionsMode: "notifyActionsFull",
+    notifyCardsMode: "notifyCardsDisabled",
+
+    notifyActionsThresholdValue: 10,
+    notifyCardsThresholdValue: 5,
+
     syncOverride: false,
     lastKnown: {
       actions: {},
       cards: {}
-    }
+    },
+
+    storage_schema: 0 // Next one should be 2!
   };
 
   chrome.storage.local.get(defaults, function(options) {
-    chrome.storage.local.set(options, function() {
-      // Try to reinject into all open FL tabs
-      reinjectContentScripts();
-    });
+
+    function commit(data) {
+      chrome.storage.local.set(data, function() {
+        // Try to reinject into all open FL tabs
+        reinjectContentScripts();
+      });
+    }
+
+    switch (options.storage_schema) { // Migration
+      case 0:
+        chrome.storage.local.get({notifyActionsFull: true, notifyCardsFull: false}, function(more_data) {
+          options.notifyActionsMode = (more_data.notifyActionsFull) ? "notifyActionsFull" : "notifyActionsDisabled";
+          options.notifyCardsMode = (more_data.notifyCardsFull) ? "notifyCardsFull" : "notifyCardsDisabled";
+          options.storage_schema = 1;
+          commit(options);
+        });
+        return;
+    }
+
+    commit(options);
   });
 });

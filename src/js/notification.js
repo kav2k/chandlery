@@ -10,9 +10,17 @@ function showNotification(notifications) {
           count = notification.count + ((notification.count - 1) ? " actions" : " action");
           message += "Your actions candle is full! (" + count + ")\n";
           break;
+        case "actionsThreshold":
+          count = notification.count + ((notification.count - 1) ? " actions" : " action");
+          message += "Your actions candle is over threshold! (" + count + ")\n";
+          break;
         case "cardsFull":
-          count = notification.count + ((notification.count - 1) ? " card" : " cards");
+          count = notification.count + ((notification.count - 1) ? " cards" : " card");
           message += "Your Opportunity deck is full! (" + count + ")\n";
+          break;
+        case "cardsThreshold":
+          count = notification.count + ((notification.count - 1) ? " cards" : " card");
+          message += "Your Opportunity deck is over threshold! (" + count + ")\n";
           break;
       }
       stale = stale && notification.stale;

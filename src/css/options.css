@@ -8,8 +8,13 @@ label[title] {
   cursor: help;
 }
 
+.bigHeader { 
+  font-size: x-large;
+  font-weight: bold;
+}
+
 .header { 
-  font-size: larger;
+  font-size: large;
   font-weight: bold;
 }
 
@@ -37,4 +42,8 @@ label[title] {
 .extlink:after {
   content: url(/img/Icon_External_Link.svg);
   margin-left: 0.2em;
+}
+
+.threshold {
+  width: 2.5em;
 }

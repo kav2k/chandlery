@@ -2,7 +2,8 @@
 
 var syncableOptions = [
   "notifyActionsFull",
-  "notifyCardsFull"
+  "notifyCardsFull",
+  "storage_schema"
 ];
 
 // LOCAL <-> SYNC MACHINERY

@@ -19,19 +19,53 @@
 
   <div id="optionsContainer" class="container">
 
-    <p class="header">
+    <p class="bigHeader">
       Notification options
     </p>
 
-    <p class="item"><label>
-      <input type="checkbox" id="notifyActionsFull">
-      Desktop notification for a full actions candle
-    </label></p>
+    <div class="header">
+      Desktop notifications for actions candle
+    </div>
 
-    <p class="item"><label>
-      <input type="checkbox" id="notifyCardsFull">
-      Desktop notification for a full Opportunities deck
-    </label></p>
+    <form>
+      <p class="item">
+        <input type="radio" id="notifyActionsDisabled" name="notifyActionsMode">
+        <label for="notifyActionsDisabled">Do not notify</label>
+      </p>
+      
+      <p class="item">
+        <input type="radio" id="notifyActionsThreshold" name="notifyActionsMode">
+        <label for="notifyActionsThreshold">Notify when full, and at </label>
+        <input type="number" class="threshold" id="notifyActionsThresholdValue" min="1" max="40" step="1">
+      </p>    
+        
+      <p class="item">
+        <input type="radio" id="notifyActionsFull" name="notifyActionsMode">
+        <label for="notifyActionsFull">Notify when full</label>
+      </p>
+    </form>
+
+    <div class="header">
+      Desktop notifications for Opportunities deck
+    </div>
+
+    <form>
+      <p class="item">
+        <input type="radio" id="notifyCardsDisabled" name="notifyCardsMode">
+        <label for="notifyCardsDisabled">Do not notify</label>
+      </p>
+      
+      <p class="item">
+        <input type="radio" id="notifyCardsThreshold" name="notifyCardsMode">
+        <label for="notifyCardsThreshold">Notify when full, and at </label>
+        <input type="number" class="threshold" id="notifyCardsThresholdValue" min="1" max="10" step="1">
+      </p>    
+        
+      <p class="item">
+        <input type="radio" id="notifyCardsFull" name="notifyCardsMode">
+        <label for="notifyCardsFull">Notify when full</label>
+      </p>
+    </form>
 
     <p>
       Please note: notifications work only if Fallen London is open in a tab.
@@ -39,7 +73,7 @@
 
     <hr>
 
-    <p class="header">
+    <p class="bigHeader">
       Advanced options
     </p>
 
