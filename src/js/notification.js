@@ -1,12 +1,10 @@
 function showNotification(notifications) {
   if (notifications.length) {
-
     var message = "";
     var count = "";
-    var notificationBits = {};
+    var stale = true;
 
     notifications.forEach(function(notification) {
-      notificationBits[notification.type] = true;
       switch (notification.type) {
         case "actionsFull":
           count = notification.count + ((notification.count - 1) ? " actions" : " action");
@@ -17,32 +15,20 @@ function showNotification(notifications) {
           message += "Your Opportunity deck is full! (" + count + ")\n";
           break;
       }
+      stale = stale && notification.stale;
     });
 
-    chrome.storage.local.get({lastNotifications: {}}, function(data) {
-      var reshow = false;
-
-      for (let key in notificationBits) {
-        if (!data.lastNotifications[key]) {
-          reshow = true; // Something new
-        }
-      }
-
-      createOrUpdate({
-        id: "chandleryNotify",
-        reshow: reshow,
-        type: "basic",
-        iconUrl: "img/icon128.png",
-        title: "Fallen London Chandlery",
-        message: message.trim(),
-        buttons: [
-          {title: "Options"}
-        ]
-      });
-
-      chrome.storage.local.set({lastNotifications: notificationBits});
+    createOrUpdate({
+      id: "chandleryNotify",
+      reshow: !stale,
+      type: "basic",
+      iconUrl: "img/icon128.png",
+      title: "Fallen London Chandlery",
+      message: message.trim(),
+      buttons: [
+        {title: "Options"}
+      ]
     });
-
   } else {
     chrome.notifications.clear("chandleryNotify");
     chrome.storage.local.set({lastNotifications: {}});
@@ -59,12 +45,9 @@ function createOrUpdate(options, callback) {
 
   var reshow = options.reshow;
   delete options.reshow;
+  if (!reshow) { return; }
 
   var targetPriority = options.priority || 0;
-
-  if (reshow) {
-    targetPriority = 0; // Guarantees 1 > targetPriority
-  }
 
   chrome.notifications.update(id, {priority: targetPriority}, function(existed) {
     if (existed) {

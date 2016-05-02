@@ -7,11 +7,19 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       var actions = message.actions;
       var cards = message.cards;
       chrome.storage.local.get(null, function(options) {
-        if (options.notifyActionsFull && actions.known && actions.full && !options.lastKnown.actions.full) {
-          notifications.push({type: "actionsFull", count: actions.current});
+        if (options.notifyActionsFull && actions.known && actions.full) {
+          notifications.push({
+            type: "actionsFull",
+            count: actions.current,
+            stale: options.lastKnown.actions.full
+          });
         }
-        if (options.notifyCardsFull && cards.known && cards.full && !options.lastKnown.cards.full) {
-          notifications.push({type: "cardsFull", count: cards.current});
+        if (options.notifyCardsFull && cards.known && cards.full) {
+          notifications.push({
+            type: "cardsFull",
+            count: cards.current,
+            stale: options.lastKnown.cards.full
+          });
         }
         showNotification(notifications);
 
