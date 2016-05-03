@@ -43,6 +43,17 @@ function showNotification(notifications) {
   }
 }
 
+function showUpdateNotification() {
+  createOrUpdate({
+    id: "chandleryUpdate",
+    reshow: true,
+    type: "basic",
+    iconUrl: "img/icon128.png",
+    title: "Fallen London Chandlery",
+    message: "New options are available!\nClick to open Options page."
+  });
+}
+
 // UTILITY FUNCTIONS
 
 function createOrUpdate(options, callback) {
@@ -95,6 +106,10 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
         }
       });
       chrome.notifications.clear("chandleryNotify");
+      break;
+    case "chandleryUpdate":
+      chrome.runtime.openOptionsPage();
+      chrome.notifications.clear("chandleryUpdate");
       break;
   }
 });

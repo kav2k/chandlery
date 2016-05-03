@@ -68,7 +68,7 @@ function reinjectContentScripts() {
   });
 }
 
-chrome.runtime.onInstalled.addListener(function() {
+chrome.runtime.onInstalled.addListener(function(details) {
   var defaults = {
     notifyActionsMode: "notifyActionsFull",
     notifyCardsMode: "notifyCardsDisabled",
@@ -82,8 +82,11 @@ chrome.runtime.onInstalled.addListener(function() {
       cards: {}
     },
 
-    storage_schema: 0 // Next one should be 2!
+    storage_schema: 0, // Next one should be 2!
+    update_notification: 0 // No need to change here
   };
+
+  var update_notification_latest = 1;
 
   chrome.storage.local.get(defaults, function(options) {
 
@@ -92,6 +95,13 @@ chrome.runtime.onInstalled.addListener(function() {
         // Try to reinject into all open FL tabs
         reinjectContentScripts();
       });
+    }
+
+    if (options.update_notification < update_notification_latest) {
+      options.update_notification = update_notification_latest;
+      if (details.reason === "update") {
+        showUpdateNotification();
+      }
     }
 
     switch (options.storage_schema) { // Migration

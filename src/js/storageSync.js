@@ -1,9 +1,12 @@
 // SYNC
 
 var syncableOptions = [
-  "notifyActionsFull",
-  "notifyCardsFull",
-  "storage_schema"
+  "notifyActionsMode",
+  "notifyActionsThresholdValue",
+  "notifyCardsMode",
+  "notifyCardsThresholdValue",
+  "storage_schema",
+  "update_notification"
 ];
 
 // LOCAL <-> SYNC MACHINERY
