@@ -58,7 +58,8 @@ function reinjectContentScripts() {
     if (chrome.runtime.lastError) { return; } // Silence access errors for reinjection
   }
 
-  chrome.tabs.query({}, function(tabs) {
+  // This query will actually work properly in Chrome 50+ and did not work in 49
+  chrome.tabs.query({url: "http://fallenlondon.storynexus.com/Gap/Load*"}, function(tabs) {
     tabs.forEach(function(tab) {
       for (let file of contentScripts) {
         chrome.tabs.executeScript(tab.id, {file: file}, silenceErrors);
