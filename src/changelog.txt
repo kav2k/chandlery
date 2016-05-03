@@ -1,3 +1,8 @@
+Version 1.3
+
+* Implemented threshold notifications for actions and cards
+* Made sure the extension only notifies once per threshold reached
+
 Version 1.2.1
 
 * Make the extension (re)activate on install/update without Fallen London reload

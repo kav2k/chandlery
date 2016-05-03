@@ -5,7 +5,7 @@
   "short_name": "Chandlery",
   "description": "Unofficial Fallen London extension to keep an eye on your action candle and Opportunities deck",
 
-  "version": "1.2.1",
+  "version": "1.3",
 
   "icons": {
     "16" : "img/icon48.png",
@@ -40,5 +40,5 @@
     "http://fallenlondon.storynexus.com/Gap/Load*"
   ],
   
-  "minimum_chrome_version": "42"
+  "minimum_chrome_version": "50"
 }
