@@ -9,12 +9,12 @@ label[title] {
 }
 
 .bigHeader { 
-  font-size: x-large;
+  font-size: large;
   font-weight: bold;
 }
 
 .header { 
-  font-size: large;
+  font-size: medium;
   font-weight: bold;
 }
 
