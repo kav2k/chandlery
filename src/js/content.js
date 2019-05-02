@@ -1,12 +1,15 @@
 // ACTIONS
 
 function getActions() {
-  var actionsElement = document.getElementById("infoBarCurrentActions");
+  // Use CSS selectors to get the actions, as there's not an element with an ID holding it
+  var actionsElement = document.querySelector("#accessible-sidebar .player-actions");
   if (!actionsElement) {
     return {known: false};
   }
-  var actionsText = actionsElement.parentElement.textContent; // Contains e.g. "4/20"
-  var match = actionsText.match(/(\d+)\/(\d+)/);
+
+  // Contains "Actions: 19 of 20". Children contain "Next actions at 8:49", but we don't need that, so we get text of only this
+  var actionsText = actionsElement.childNodes[0].nodeValue; 
+  var match = actionsText.match(/Actions: (\d+) of (\d+)/);
   if (match) {
     return {
       known: true,
@@ -26,25 +29,28 @@ function actionsChange() {
 }
 
 var actionsObserver = watchForChange(
-  "lhs_col",
-  "infoBarCurrentActions",
+  document.getElementById("accessible-sidebar"),
+  "player-actions",
   actionsChange
 );
 
 // CARDS
 
 function getCards() {
-  var cardsElement = document.getElementById("card_deck");
+  var cardsElement = document.querySelector(".deck-info");
   if (!cardsElement) {
     return {known: false};
   }
-  var cardsText = cardsElement.parentElement.textContent; // Contains e.g. "4/20"
+
+  // Contains text of the format "X cards waiting!", "1 card remaining!", or "No cards waiting."
+  // As well as "Next in 0:01" if applicable
+  var cardsText = cardsElement.parentElement.textContent;
   var match = cardsText.match(/(\d+|No) cards? waiting/);
   if (match) {
     return {
       known: true,
       current: (match[1] == "No") ? 0 : parseInt(match[1]),
-      full: !cardsText.match(/Another in/)
+      full: !cardsText.match(/Next in/)
     };
   } else {
     return {known: false};
@@ -58,16 +64,18 @@ function cardsChange() {
 }
 
 var cardsObserver = watchForChange(
-  "rhs_col",
-  "deck-contents-description",
+  document.querySelector(".cards deck-container"),
+  "deck-info",
   cardsChange
 );
 
 // OBSERVER FUNCTIONS
 
-function watchForChange(rootId, marker, callback) {
-  var observer = new MutationSummary({
-    rootNode: document.getElementById(rootId),
+// As far as I can tell, "marker" can be used to specify either an ID or class
+// The first arg is a node because sometimes you don't get the option of a nice container with an ID...
+function watchForChange(rootNode, marker, callback) { 
+  var observer = new MutationSummary({ 
+    rootNode: rootNode,
     callback: function(summaries) {
       var filtered = [];
       summaries.forEach(function(summary) {
