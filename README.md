@@ -8,17 +8,19 @@ It will also optionally show desktop notifications when your candle or deck are 
 
 ---
 
-**Installation:** [Chrome Web Store](https://chrome.google.com/webstore/detail/chandlery-for-fallen-lond/anhebaghddcipcnlgoehajobofkgghje)
+**Installation:** I would provide the original's 
 
 [Failbetter Games commiunity forum topic](http://community.failbettergames.com/topic19830-browser-extension-chandlery-for-fallen-london.aspx)
 
 The extension works by observing an open Fallen London page, no requests to the server - it stops updating if you close your tab (and stops updating the deck count if the deck is not visible).
 
-Feature requests are welcome, as long as they don't violate the "no automation" rule of Fallen London.
+This is a fork of [Chandlery](https://github.com/kav2k/chandlery) attempting to make it compatible with FL's redesign. I'm happy to take feature requests, as long as they don't violate the "no automation" rule of Fallen London, but I can't guarantee further support.
 
 ---
 
 Credits:
+
+[Alexander Kashev](https://github.com/kav2k) for creating the initial version of this extension.
 
 [Fallen London](http://fallenlondon.com/) © Copyright [Failbetter Games](http://www.failbettergames.com/)
 
