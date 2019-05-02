@@ -1,6 +1,6 @@
 # Chandlery for Fallen London
 
-Chandlery is an **unofficial** Chrome/Chromium helper extension for [Fallen London](http://fallenlondon.storynexus.com/)
+Chandlery is an **unofficial** Chrome/Chromium helper extension for [Fallen London](https://fallenlondon.com/)
 
 As long as your Fallen London tab is open, Chandlery will monitor and update the tab title with your current number of actions and Opportunity deck cards.
 
@@ -20,6 +20,6 @@ Feature requests are welcome, as long as they don't violate the "no automation" 
 
 Credits:
 
-[Fallen London](http://fallenlondon.storynexus.com/) © Copyright [Failbetter Games](http://www.failbettergames.com/)
+[Fallen London](http://fallenlondon.com/) © Copyright [Failbetter Games](http://www.failbettergames.com/)
 
 [Icon](http://www.flaticon.com/free-icon/candle-with-fire-flame_48458): by Icons8 from www.flaticon.com, licensed under CC BY 3.0

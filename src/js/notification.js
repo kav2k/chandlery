@@ -97,12 +97,12 @@ function createOrUpdate(options, callback) {
 chrome.notifications.onClicked.addListener(function(notificationId) {
   switch (notificationId) {
     case "chandleryNotify":
-      chrome.tabs.query({url: "http://fallenlondon.storynexus.com/Gap/Load*"}, function(tabs) {
+      chrome.tabs.query({url: "https://fallenlondon.com/*"}, function(tabs) {
         if (tabs.length) {
           chrome.tabs.update(tabs[0].id, {active: true});
           chrome.windows.update(tabs[0].windowId, {focused: true});
         } else {
-          chrome.tabs.create({url: "http://fallenlondon.storynexus.com/"});
+          chrome.tabs.create({url: "https://fallenlondon.com/"});
         }
       });
       chrome.notifications.clear("chandleryNotify");

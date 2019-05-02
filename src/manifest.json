@@ -15,7 +15,7 @@
 
   "content_scripts": [
     {
-      "matches": ["http://fallenlondon.storynexus.com/Gap/Load*"],
+      "matches": ["https://www.fallenlondon.com/*"],
       "js": ["js/lib/mutation-summary.js", "js/content.js"]
     }
   ],
@@ -37,7 +37,7 @@
   "permissions": [
     "storage", 
     "notifications",
-    "http://fallenlondon.storynexus.com/Gap/Load*"
+    "https://www.fallenlondon.com/*"
   ],
   
   "minimum_chrome_version": "50"
