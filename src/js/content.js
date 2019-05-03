@@ -1,5 +1,12 @@
 /* global MutationSummary */
+
 // ACTIONS
+
+// General design:
+// getActions() polls a known element for data.
+// actionsRootObserver watches for appearance of the DOM fragment containing the element.
+// actionsObservable(el) starts watching the (smallest possible) DOM fragment for action data.
+// actionsChange() is called every time the data changes or becomes newly available in the DOM.
 
 function getActions() {
   // Use CSS selectors to get the actions, as there's not an element with an ID holding it
@@ -23,17 +30,31 @@ function getActions() {
   }
 }
 
+let actionsObserver;
+
+let actionsRootObserver = watchForObservable(
+  document.querySelector("#root"),
+  ".player-actions",
+  actionsObservable
+);
+
+function actionsObservable(element) {
+  if (actionsObserver) {
+    actionsObserver.disconnect();
+  }
+  actionsObserver = watchForChange(
+    element,
+    "player-actions",
+    actionsChange
+  );
+  actionsChange();
+}
+
 function actionsChange() {
   const state = {actions: getActions(), cards: getCards()};
   setTitle(state);
   notifyBackground(state);
 }
-
-let actionsObserver = watchForChange(
-  document.getElementById("#root"),
-  "player-actions",
-  actionsChange
-);
 
 // CARDS
 
@@ -58,37 +79,73 @@ function getCards() {
   }
 }
 
+let cardsObserver;
+
+let cardsRootObserver = watchForObservable(
+  document.querySelector("#root"),
+  ".deck-info__cards-in-deck",
+  cardsObservable
+);
+
+function cardsObservable(element) {
+  if (cardsObserver) {
+    cardsObserver.disconnect();
+  }
+  cardsObserver = watchForChange(
+    element,
+    "deck-info__cards-in-deck",
+    cardsChange
+  );
+  cardsChange();
+}
+
 function cardsChange() {
   const state = {actions: getActions(), cards: getCards()};
   setTitle(state);
   notifyBackground(state);
 }
 
-let cardsObserver = watchForChange(
-  document.querySelector("#root"),
-  "deck-info__cards-in-deck",
-  cardsChange
-);
-
 // OBSERVER FUNCTIONS
 
-// As far as I can tell, "marker" can be used to specify either an ID or class
-// The first arg is a node because sometimes you don't get the option of a nice container with an ID...
+// Creates an observer looking for DOM subtree root defined by targetQuery under rootNode.
+// If matching nodes are inserted into the DOM, call callback on each.
+function watchForObservable(rootNode, targetQuery, callback) {
+  const observer = new MutationSummary({
+    rootNode: rootNode,
+    callback: function(summaries) {
+      summaries.forEach(function(summary) {
+        summary.added.forEach((element) => callback(element));
+      });
+    },
+    queries: [{element: targetQuery}]
+  });
+
+  return observer;
+}
+
+// Creates an observer for character data change in DOM subtree from rootNode.
+// If the change occurred in a (text) node whose parent matches the marker, call callback.
 function watchForChange(rootNode, marker, callback) {
+  if (rootNode === null) {
+    return undefined;
+  }
+
+  function markerFilter(marker) {
+    return function(element) {
+      return element.parentNode.id == marker ||
+             element.parentNode.classList.contains(marker);
+    };
+  }
+
   const observer = new MutationSummary({
     rootNode: rootNode,
     callback: function(summaries) {
       let filtered = [];
       summaries.forEach(function(summary) {
-        filtered = filtered.concat(
-          summary.added.filter(markerFilter(marker))
-        );
-        filtered = filtered.concat(
-          // Big performance hit with #root?
-          summary.valueChanged.filter(markerFilter(marker))
-        );
+        filtered.push(...summary.added.filter(markerFilter(marker)));
+        filtered.push(...summary.valueChanged.filter(markerFilter(marker)));
       });
-      if (filtered.length) { callback(filtered); }
+      if (filtered.length) { callback(); }
     },
     queries: [{characterData: true}]
   });
@@ -96,14 +153,7 @@ function watchForChange(rootNode, marker, callback) {
   return observer;
 }
 
-function markerFilter(marker) {
-  return function(element) {
-    return element.parentNode.id == marker ||
-           element.parentNode.classList.contains(marker);
-  };
-}
-
-// ACTIONS
+// TITLE UPDATES
 
 const baseTitle = document.title;
 
@@ -130,12 +180,31 @@ function notifyBackground(state) {
     chrome.runtime.sendMessage(message);
   } catch (e) {
     // Content script orphaned; stop processing
+    const observers = [actionsObserver, actionsRootObserver, cardsObserver, cardsRootObserver];
+
     console.warn("Chandlery " + version + " content script orphaned");
-    actionsObserver.disconnect();
-    cardsObserver.disconnect();
+    observers.forEach((observer) => {
+      if (observer) {
+        observer.disconnect();
+      }
+    });
   }
 }
+
+// INITIALIZATION
 
 const version = chrome.runtime.getManifest().version;
 
 console.log("Chandlery " + version + " injected");
+
+// In case that elements exist at the start (script was reloaded)
+actionsObserver = watchForChange(
+  document.querySelector(".player-actions"),
+  "player-actions",
+  actionsChange
+);
+cardsObserver = watchForChange(
+  document.querySelector(".deck-info__cards-in-deck"),
+  "deck-info__cards-in-deck",
+  cardsChange
+);
