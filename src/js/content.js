@@ -1,15 +1,16 @@
+/* global MutationSummary */
 // ACTIONS
 
 function getActions() {
   // Use CSS selectors to get the actions, as there's not an element with an ID holding it
-  var actionsElement = document.querySelector("#accessible-sidebar .player-actions");
+  const actionsElement = document.querySelector("#accessible-sidebar .player-actions");
   if (!actionsElement) {
     return {known: false};
   }
 
   // Contains "Actions: 19 of 20". Children contain "Next actions at 8:49", but we don't need that, so we get text of only this
-  var actionsText = actionsElement.childNodes[0].nodeValue; 
-  var match = actionsText.match(/Actions: (\d+) of (\d+)/);
+  const actionsText = actionsElement.childNodes[0].nodeValue;
+  const match = actionsText.match(/Actions: (\d+) of (\d+)/);
   if (match) {
     return {
       known: true,
@@ -23,12 +24,12 @@ function getActions() {
 }
 
 function actionsChange() {
-  var state = {actions: getActions(), cards: getCards()};
+  const state = {actions: getActions(), cards: getCards()};
   setTitle(state);
   notifyBackground(state);
 }
 
-var actionsObserver = watchForChange(
+let actionsObserver = watchForChange(
   document.getElementById("#root"),
   "player-actions",
   actionsChange
@@ -37,15 +38,15 @@ var actionsObserver = watchForChange(
 // CARDS
 
 function getCards() {
-  var cardsElement = document.querySelector(".deck-info");
+  const cardsElement = document.querySelector(".deck-info");
   if (!cardsElement) {
     return {known: false};
   }
 
   // Contains text of the format "X cards waiting!", "1 card remaining!", or "No cards waiting."
   // As well as "Next in 0:01" if applicable
-  var cardsText = cardsElement.parentElement.textContent;
-  var match = cardsText.match(/(\d+|No) cards? waiting/);
+  const cardsText = cardsElement.parentElement.textContent;
+  const match = cardsText.match(/(\d+|No) cards? waiting/);
   if (match) {
     return {
       known: true,
@@ -58,12 +59,12 @@ function getCards() {
 }
 
 function cardsChange() {
-  var state = {actions: getActions(), cards: getCards()};
+  const state = {actions: getActions(), cards: getCards()};
   setTitle(state);
   notifyBackground(state);
 }
 
-var cardsObserver = watchForChange(
+let cardsObserver = watchForChange(
   document.querySelector("#root"),
   "deck-info__cards-in-deck",
   cardsChange
@@ -73,11 +74,11 @@ var cardsObserver = watchForChange(
 
 // As far as I can tell, "marker" can be used to specify either an ID or class
 // The first arg is a node because sometimes you don't get the option of a nice container with an ID...
-function watchForChange(rootNode, marker, callback) { 
-  var observer = new MutationSummary({ 
+function watchForChange(rootNode, marker, callback) {
+  const observer = new MutationSummary({
     rootNode: rootNode,
     callback: function(summaries) {
-      var filtered = [];
+      let filtered = [];
       summaries.forEach(function(summary) {
         filtered = filtered.concat(
           summary.added.filter(markerFilter(marker))
@@ -104,10 +105,10 @@ function markerFilter(marker) {
 
 // ACTIONS
 
-var baseTitle = document.title;
+const baseTitle = document.title;
 
 function setTitle(state) {
-  var title = "";
+  let title = "";
   if (state.actions.known) {
     title += "(" + state.actions.current + ") ";
   }
@@ -119,10 +120,10 @@ function setTitle(state) {
 }
 
 function notifyBackground(state) {
-  message = {
+  const message = {
     command: "notify",
     actions: state.actions,
-    cards:   state.cards
+    cards: state.cards
   };
 
   try {
@@ -135,6 +136,6 @@ function notifyBackground(state) {
   }
 }
 
-var version = chrome.runtime.getManifest().version;
+const version = chrome.runtime.getManifest().version;
 
 console.log("Chandlery " + version + " injected");

@@ -1,6 +1,6 @@
 // SYNC
 
-var syncableOptions = [
+const syncableOptions = [
   "notifyActionsMode",
   "notifyActionsThresholdValue",
   "notifyCardsMode",
@@ -14,9 +14,9 @@ var syncableOptions = [
 
 // Although we're using an event page,
 // this state information does not need to survive unloading
-var timeout;
-var queuedChanges = {};
-var syncStamp = 1;
+let timeout;
+let queuedChanges = {};
+let syncStamp = 1;
 
 chrome.storage.onChanged.addListener(function(changes, area) {
   chrome.storage.local.get(["syncOverride"], function(data) {
@@ -32,8 +32,8 @@ chrome.storage.onChanged.addListener(function(changes, area) {
       // Change in local storage: queue a flush to sync
 
       // Filter out syncable properties
-      var filteredChanges = {};
-      var syncable = false;
+      let filteredChanges = {};
+      let syncable = false;
 
       for (let key of syncableOptions) {
         if (typeof changes[key] != "undefined") {
@@ -89,9 +89,9 @@ function flushToSync() {
 }
 
 function commitChanges(changes, storage) {
-  var setData = {};
+  let setData = {};
 
-  for (var key in changes) {
+  for (const key in changes) {
     setData[key] = changes[key].newValue;
   }
 

@@ -1,58 +1,63 @@
+/* global showNotification, showUpdateNotification */
 // MESSAGE LISTENERS
 
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(message) {
   switch (message.command) {
     case "notify":
-      var notifications = [];
-      var actions = message.actions;
-      var cards = message.cards;
-      chrome.storage.local.get(null, function(options) {
-        if ((options.notifyActionsMode === "notifyActionsFull" || options.notifyActionsMode === "notifyActionsThreshold") && actions.known && actions.full) {
-          notifications.push({
-            type: "actionsFull",
-            count: actions.current,
-            stale: options.lastKnown.actions.full
-          });
-        } else if (options.notifyActionsMode === "notifyActionsThreshold" && actions.known && actions.current >= options.notifyActionsThresholdValue) {
-          notifications.push({
-            type: "actionsThreshold",
-            count: actions.current,
-            stale: options.lastKnown.actions.current >= options.notifyActionsThresholdValue
-          });
-        }
-        if ((options.notifyCardsMode === "notifyCardsFull" || options.notifyActionsMode === "notifyCardsThreshold") && cards.known && cards.full) {
-          notifications.push({
-            type: "cardsFull",
-            count: cards.current,
-            stale: options.lastKnown.cards.full
-          });
-        } else if (options.notifyCardsMode === "notifyCardsThreshold" && cards.known && cards.current >= options.notifyCardsThresholdValue) {
-          notifications.push({
-            type: "cardsThreshold",
-            count: cards.current,
-            stale: options.lastKnown.cards.current >= options.notifyCardsThresholdValue
-          });
-        }
-        showNotification(notifications);
-
-        var lastKnown = options.lastKnown;
-        if (actions.known) {
-          lastKnown.actions = actions;
-        }
-        if (cards.known) {
-          lastKnown.cards = cards;
-        }
-
-        chrome.storage.local.set({lastKnown: lastKnown});
-      });
+      notify(message);
       break;
   }
 });
 
+function notify(message) {
+  let notifications = [];
+  const actions = message.actions;
+  const cards = message.cards;
+  chrome.storage.local.get(null, function(options) {
+    if ((options.notifyActionsMode === "notifyActionsFull" || options.notifyActionsMode === "notifyActionsThreshold") && actions.known && actions.full) {
+      notifications.push({
+        type: "actionsFull",
+        count: actions.current,
+        stale: options.lastKnown.actions.full
+      });
+    } else if (options.notifyActionsMode === "notifyActionsThreshold" && actions.known && actions.current >= options.notifyActionsThresholdValue) {
+      notifications.push({
+        type: "actionsThreshold",
+        count: actions.current,
+        stale: options.lastKnown.actions.current >= options.notifyActionsThresholdValue
+      });
+    }
+    if ((options.notifyCardsMode === "notifyCardsFull" || options.notifyActionsMode === "notifyCardsThreshold") && cards.known && cards.full) {
+      notifications.push({
+        type: "cardsFull",
+        count: cards.current,
+        stale: options.lastKnown.cards.full
+      });
+    } else if (options.notifyCardsMode === "notifyCardsThreshold" && cards.known && cards.current >= options.notifyCardsThresholdValue) {
+      notifications.push({
+        type: "cardsThreshold",
+        count: cards.current,
+        stale: options.lastKnown.cards.current >= options.notifyCardsThresholdValue
+      });
+    }
+    showNotification(notifications);
+
+    let lastKnown = options.lastKnown;
+    if (actions.known) {
+      lastKnown.actions = actions;
+    }
+    if (cards.known) {
+      lastKnown.cards = cards;
+    }
+
+    chrome.storage.local.set({lastKnown: lastKnown});
+  });
+}
+
 // INSTALL/UPDATE HANDLING
 
 function reinjectContentScripts() {
-  var contentScripts = ["js/lib/mutation-summary.js", "js/content.js"];
+  const contentScripts = ["js/lib/mutation-summary.js", "js/content.js"];
 
   function silenceErrors() {
     if (chrome.runtime.lastError) { return; } // Silence access errors for reinjection
@@ -69,7 +74,7 @@ function reinjectContentScripts() {
 }
 
 chrome.runtime.onInstalled.addListener(function(details) {
-  var defaults = {
+  const defaults = {
     notifyActionsMode: "notifyActionsFull",
     notifyCardsMode: "notifyCardsDisabled",
 
@@ -86,7 +91,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
     update_notification: 0 // No need to change here
   };
 
-  var update_notification_latest = 1;
+  const update_notification_latest = 1;
 
   chrome.storage.local.get(defaults, function(options) {
 

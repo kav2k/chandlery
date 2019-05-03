@@ -1,8 +1,10 @@
+/* exported showNotification, showUpdateNotification */
+
 function showNotification(notifications) {
   if (notifications.length) {
-    var message = "";
-    var count = "";
-    var stale = true;
+    let message = "";
+    let count = "";
+    let stale = true;
 
     notifications.forEach(function(notification) {
       switch (notification.type) {
@@ -59,14 +61,14 @@ function showUpdateNotification() {
 function createOrUpdate(options, callback) {
   callback = callback || function() {};
 
-  var id = options.id;
+  const id = options.id;
   delete options.id;
 
-  var reshow = options.reshow;
+  const reshow = options.reshow;
   delete options.reshow;
   if (!reshow) { return; }
 
-  var targetPriority = options.priority || 0;
+  let targetPriority = options.priority || 0;
 
   chrome.notifications.update(id, {priority: targetPriority}, function(existed) {
     if (existed) {
@@ -115,7 +117,7 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
 });
 
 chrome.notifications.onButtonClicked.addListener(
-  function(notificationId, buttonIndex) {
+  function() {
     chrome.runtime.openOptionsPage();
   }
 );
