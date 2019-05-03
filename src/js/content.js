@@ -29,7 +29,7 @@ function actionsChange() {
 }
 
 var actionsObserver = watchForChange(
-  document.getElementById("accessible-sidebar"),
+  document.getElementById("#root"),
   "player-actions",
   actionsChange
 );
@@ -64,8 +64,8 @@ function cardsChange() {
 }
 
 var cardsObserver = watchForChange(
-  document.querySelector(".cards deck-container"),
-  "deck-info",
+  document.querySelector("#root"),
+  "deck-info__cards-in-deck",
   cardsChange
 );
 
@@ -81,6 +81,10 @@ function watchForChange(rootNode, marker, callback) {
       summaries.forEach(function(summary) {
         filtered = filtered.concat(
           summary.added.filter(markerFilter(marker))
+        );
+        filtered = filtered.concat(
+          // Big performance hit with #root?
+          summary.valueChanged.filter(markerFilter(marker))
         );
       });
       if (filtered.length) { callback(filtered); }
